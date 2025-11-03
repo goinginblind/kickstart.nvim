@@ -1,4 +1,4 @@
--- Set <space> as the leader key
+-- Set <space> as the leader kepy
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
@@ -843,7 +843,7 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
@@ -863,7 +863,7 @@ require('lazy').setup({
       require('catppuccin').setup {
         flavour = 'mocha',
         float = {
-          transparent = false, -- disable transparent floating windows
+          transparent = true, -- enable transparent floating windows
           solid = false, -- use solid styling for floating windows, see |winborder|
         },
         auto_integrations = false,
