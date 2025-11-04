@@ -35,6 +35,16 @@ vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
 
+-- Enable line wrapping
+vim.opt.wrap = true
+
+-- Enable linebreak,
+-- so the words are wrapped fully
+vim.opt.linebreak = true
+
+-- Add visual indication for line breaks
+vim.opt.showbreak = '↳ '
+
 -- Enable break indent
 vim.o.breakindent = true
 
@@ -965,7 +975,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
+  -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
