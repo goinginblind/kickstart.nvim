@@ -598,7 +598,10 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {
+          cmd = { 'clangd', '--background-index', '--clang-tidy', '--completion-style=detailed', '--header-insertion=iwyu' },
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+        },
         gopls = {
           settings = {
             gopls = {
@@ -738,25 +741,34 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
+        --
+        --
+        -- local disable_filetypes = { c = true, cpp = true }
+        -- if disable_filetypes[vim.bo[bufnr].filetype] then
+        --   return nil
+        -- else
+        return {
+          timeout_ms = 500,
+          lsp_format = 'fallback',
+        }
       end,
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'goimports', 'gofumpt' },
         rust = { 'rustfmt' },
         python = { 'isort', 'black' },
+        c = { 'clang_format' },
+        cpp = { 'clang_format' },
         -- Conform can also run multiple formatters sequentially
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        clang_format = {
+          prepend_args = { '--style={BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Never}' },
+        },
       },
     },
   },
@@ -962,6 +974,45 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    'obsidian-nvim/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
+    event = {
+      'BufReadPre ' .. vim.fn.expand '~' .. '/Documents/Obsidian/main/*.md',
+      'BufNewFile ' .. vim.fn.expand '~' .. '/Documents/Obsidian/main/*.md',
+    },
+    ---@module 'obsidian'
+    ---@type obsidian.config
+    opts = {
+      legacy_commands = false,
+      workspaces = {
+        {
+          name = 'main',
+          path = '~/Documents/Obsidian/main',
+        },
+      },
+      -- This allows for all the ghost notes to lead into specified folder
+      -- when they are created from the inline traversal into new note
+      new_note_location = function()
+        return '~/Documents/Obsidian/main/Zettelkasten'
+      end,
+      -- And this is almost the same - just that the images are saved in the Files
+      -- folder, still prompts for the name of the pasted images - useful when you paste
+      -- a screenshot - their names are usually 2025-10-11-17-36-12.png or something like that.
+      attachments = {
+        img_folder = 'Files',
+      },
+
+      -- Here we have a small function that makes the id of the note
+      -- match the name of the note the moment it's created: thus,
+      -- new .md files themselves are same as their contents, instead
+      -- of the randomly generated ids - hence, no more create-rename loop
+      note_id_func = function(title)
+        -- just use the title as filename (fallback to "untitled")
+        return title or 'untitled'
+      end,
+    },
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
