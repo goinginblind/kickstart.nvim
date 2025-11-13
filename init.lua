@@ -4,6 +4,12 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Set the default shell to be nu
+vim.o.shell = '/usr/bin/nu'
+
+-- Set conceallevel to 2, so markdown looks pretty
+vim.o.conceallevel = 2
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -767,7 +773,7 @@ require('lazy').setup({
       },
       formatters = {
         clang_format = {
-          prepend_args = { '--style={BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Never}' },
+          prepend_args = { '--style={BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Always}' },
         },
       },
     },
@@ -994,9 +1000,9 @@ require('lazy').setup({
       },
       -- This allows for all the ghost notes to lead into specified folder
       -- when they are created from the inline traversal into new note
-      new_note_location = function()
-        return '~/Documents/Obsidian/main/Zettelkasten'
-      end,
+      notes_subdir = 'Zettelkasten',
+      new_notes_location = 'notes_subdir',
+
       -- And this is almost the same - just that the images are saved in the Files
       -- folder, still prompts for the name of the pasted images - useful when you paste
       -- a screenshot - their names are usually 2025-10-11-17-36-12.png or something like that.
